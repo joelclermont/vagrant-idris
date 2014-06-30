@@ -1,0 +1,35 @@
+---
+- hosts: all
+  sudo: true
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install LLVM
+      apt: pkg=llvm-3.3-dev
+
+    - name: Install libgc
+      apt: pkg=libgc-dev
+
+    - name: Install pkg-config
+      apt: pkg=pkg-config
+    
+    - name: Install Haskell
+      apt: pkg=haskell-platform state=latest
+
+    - name: Install Haskell terminfo bindings
+      apt: pkg=libghc-terminfo-dev
+
+    - name: Install GMP
+      apt: pkg=libgmp3-dev state=latest
+
+    - name: Update Cabal
+      command: /usr/bin/cabal update
+      sudo: false
+
+    - name: Install Idris
+      command: /usr/bin/cabal install idris
+      sudo: false
+
+    - name: Make sure Cabal is in PATH
+      lineinfile: dest=/etc/environment state=present backrefs=yes regexp='PATH=(["]*)((?!.*?~/.cabal/bin).*?)(["]*)$' line="PATH=\1\2:~/.cabal/bin\3"
